@@ -1,0 +1,187 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+   <div class="container w-75">
+    <form method="get">
+         <div class="row">
+        <div class="col-md-3">
+            {{ form.country_from.label_tag }}
+            {{ form.country_from }}
+            <div class="form-error">{{ form.country_from.errors }}</div>
+        </div>
+        <div class="col-md-3">
+            {{ form.country_to.label_tag }}
+            {{ form.country_to }}
+            <div class="form-error">{{ form.country_to.errors }}</div>
+        </div>
+         <div class="col-md-3">
+            {{ form.weight_max.label_tag }}
+            {{ form.weight_max}}
+            <div class="form-error">{{ form.weight_max.errors }}</div>
+        </div>
+         <div class="col-md-3">
+            {{ form.volume_max.label_tag }}
+            {{ form.volume_max }}
+            <div class="form-error">{{ form.volume_max.errors }}</div>
+        </div>
+    </div>
+
+       <div class="row" align="center">
+        <div class="col-md-3">
+            {{ form.region_from.label_tag }}
+            {{ form.region_from  }}
+            <div class="form-error">{{ form.region_from.errors }}</div>
+
+            {{ form.city_from.label_tag }}
+            {{ form.city_from }}
+            <div class="form-error">{{ form.city_from.errors }}</div>
+        </div>
+
+        <div class="col-md-3">
+            {{ form.region_to.label_tag }}
+            {{ form.region_to}}
+            <div class="form-error">{{ form.region_to.errors }}</div>
+
+            {{ form.city_to.label_tag }}
+            {{ form.city_to }}
+            <div class="form-error">{{ form.city_to.errors }}</div>
+
+        </div>
+        <div class="col-md-3">
+            {{ form.load_unload.label_tag }}
+            {{ form.load_unload  }}
+            <div class="form-error">{{ form.load_unload.errors }}</div>
+        </div>
+        <div class="col-md-3">
+            {{ form.body_type.label_tag }}
+            {{ form.body_type }}
+            <div class="form-error">{{ form.body_type.errors }}</div>
+        </div>
+    </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#id_country_from').change(function() {
+        var url = "{% url 'cargo:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_from").html(data);
+            }
+        });
+    });
+
+    $('#id_region_from').change(function() {
+        var url = "{% url 'cargo:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_from").html(data);
+            }
+        });
+    });
+
+    $('#id_country_to').change(function() {
+        var url = "{% url 'cargo:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_to").html(data);
+            }
+        });
+    });
+
+    $('#id_region_to').change(function() {
+        var url = "{% url 'cargo:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_to").html(data);
+            }
+        });
+    });
+</script>
+    <div align="center">
+        <button type="submit">Фильтр</button>
+    </div>
+    </form>
+</div>
+
+    <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+    <h2>{{title}}</h2>
+    <table>
+        <tbody>
+            {% for cargo in cargos %}
+                 <tr class="{% if cargo.published %}published-t-true{% else %}published-t-false{% endif %}">
+                <td>{{ cargo.title }}<br><br>{{ cargo.notes }}</td>
+                <td>  до {{ cargo.weight_max }}кг <br>
+                     до {{ cargo.volume_max }} м3</td>
+
+                <td>
+                    {% if cargo.length and cargo.width %}
+                    ДШВ: <br>{{ cargo.length }}|{{ cargo.width }}|{{ cargo.height }}
+                    {% endif %}
+                {{ cargo.packaging }}
+                </td>
+
+                <td>{{ cargo.body_type.all|join:", " }}</td>
+                <td>{{ cargo.load_unload.all|join:", " }}</td>
+                <td>{{ cargo.permissions.all|join:", " }}</td>
+                <td>{{ cargo.payment_type }}</td>
+                <td>{{ cargo.amount }}</td>
+                <td>{{ cargo.currency }}</td>
+                <td>{{ cargo.payment_moment }}</td>
+                <td>
+                    {% if cargo.photo %}
+                        <img src="{{ cargo.photo.url }}" alt="Photo" style="max-width: 50px;">
+                    {% endif %}
+                </td>
+                 <td>    {% if user.photo %}
+                        <p><img alt="" width="32" height="32" class="rounded-circle me-2" src="{{cargo.author.photo.url}}"></p>
+                            {% endif %}
+                        <strong>{{cargo.author}}</strong>
+                    <span> <a id="numberto" href=tel:"+380441234567">+38 (044) 123-45-67</a></span>
+
+
+                 </td>
+                     <td>
+                    <form method="post" action="{% url 'freeze_cargo'%}">
+                                {% csrf_token %}
+                                <select name="transport_id">
+                                    {% for transport in user_transport %}
+                                        <option value="{{ transport.id }}">{{ transport.model }}, {{ transport.license_plate }}, {{ transport.year }} </option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+
+                                <button type="submit">Взяти вантаж</button>
+                            </form>
+
+            {% endfor %}
+
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+     </div>
+</div>
+{% endblock %}
+

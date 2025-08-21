@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="container mx-5">
+<h1>{{title}}</h1>
+
+<div class="container mt-5">
+{% for event in events_as_cargo_author %}
+    Перевезення номер: {{event.id}}
+    <br>
+    Дата: {{event.event_date}}
+    {% if event.act_file %}
+    <a href="{% url 'download_file' 'act' event.id %}" target="_blank" class="mx-5">Завантажити Акт</a>
+    <a href="{% url 'download_file' 'invoice' event.id %}" target="_blank" class="mx-5">Завантажити Рахунок</a>
+    {% else %}
+        <form method="post" action="{% url 'create_docs'%}">
+            {% csrf_token %}
+            <input type="hidden" name="ev_id" value="{{ event.id }}">
+        <button type="submit">Створити документи</button>
+            </form>
+
+    {% endif %}
+    <hr>
+{% endfor %}
+
+{% for event in events_as_transport_author %}
+
+    Перевезення номер: {{event.id}}
+    <br>
+    Дата: {{event.event_date}}
+    {% if event.act_file %}
+    <a href="{% url 'download_file' 'act' event.id %}" target="_blank" class="mx-5">Завантажити Акт</a>
+
+    <a href="{% url 'download_file' 'invoice' event.id %}" target="_blank" class="mx-5">Завантажити Рахунок</a>
+
+    {% else %}
+        <form method="post" action="{% url 'create_docs'%}">
+            {% csrf_token %}
+            <input type="hidden" name="ev_id" value="{{ event.id }}">
+        <button type="submit" class="btn btn-primary rounded-pill px-3">Створити документи</button>
+            </form>
+    {% endif %}
+    <hr>
+{% endfor %}
+</div>
+    </div>
+{% endblock %}

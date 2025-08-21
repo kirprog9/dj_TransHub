@@ -1,0 +1,289 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Мій Вантаж</h2>
+<br>
+    <h2>Вантаж в обробці</h2>
+            {% for cargo in cargos %}
+    {% if cargo.status == 'PENDING' %}
+        <div class="{% if cargo.published %}published-t-true{% else %}published-t-false{% endif %}">
+
+    <div class="container2">
+
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                     {% if cargo.published %}
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                    {% else %}
+                     <span style="color:red;">Не Опубліковано</span>
+                    {% endif %}
+
+                </div>
+                <div class="right">
+                    <div class="price">{{ cargo.amount }} {{ cargo.currency}}</div>
+                    <div class="price-per-km">{{ cargo.get_per_km }} грн/км</div>
+                    <div class="tags">
+                        <span>{{ cargo.get_payment_type_display }}</span>
+                        <span>{{ cargo.get_payment_moment_display }}</span>
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>{{ cargo.weight_max }} кг</span>
+                    <span>{{ cargo.volume_max }} м³</span>
+                    <span>ДШВ: {{ cargo.length }} м,{{ cargo.width }} м,{{ cargo.height }} м</span>
+
+                </div>
+                <div class="details">
+                    <span>Пакування: {{ cargo.get_packaging_display }}</span>
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                    <a href="{% url 'cargo:update' cargo.id %}">Редагувати</a>
+                </div>
+
+
+
+            <div class="d-flex gap-2">
+
+                {% if cargo.frozen_set.exists %}
+            {% for frozen in cargo.frozen_set.all %}
+                <p class="btn btn-info rounded-pill px-3"><a href="{{ frozen.transport.get_absolute_url }}"> Про перевізника та траспортний засіб</a> </p>
+            {% endfor %}
+        {% endif %}
+
+                    {% if cargo.freeze %}
+                    <form method="post" action="{% url 'take_cargo'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit" class="btn btn-success rounded-pill px-3">Відправити свій вантаж</button>
+                    </form>
+                    <form method="post" action="{% url 'un_freeze'%}">
+                    {% csrf_token %}
+                    <input type="hidden"  name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit" class="btn btn-warning rounded-pill px-3">Відмовитися</button>
+                    </form>
+                    {% endif %}
+                </div>
+  </div>
+
+            </div>
+        </div>
+            </div>
+    {% endif %}
+            {% endfor %}
+
+     <h2>Мій вантаж в дорозі:</h2>
+
+            {% for cargo in cargos %}
+    {% if cargo.status == 'IN_TRANSIT' %}
+            <div class="in_transit">
+                    <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                </div>
+                <div class="right">
+                    <div class="price">{{ cargo.amount }} {{ cargo.currency}}</div>
+                    <div class="price-per-km">{{ cargo.get_per_km }} грн/км</div>
+                    <div class="tags">
+                        <span>{{ cargo.get_payment_type_display }}</span>
+                        <span>{{ cargo.get_payment_moment_display }}</span>
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+
+                    <form method="post" action="{% url 'delivered_cargo'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit" class="btn btn-success rounded-pill px-3">Доставлено</button>
+                    </form>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>{{ cargo.weight_max }} кг</span>
+                    <span>{{ cargo.volume_max }} м³</span>
+                    <span>ДШВ: {{ cargo.length }} м,{{ cargo.width }} м,{{ cargo.height }} м</span>
+
+                </div>
+                <div class="details">
+                    <span>Пакування: {{ cargo.get_packaging_display }}</span>
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                </div>
+
+
+                    {% if cargo.freeze %}
+                    <form method="post" action="{% url 'take_cargo'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit">Підвердити Машину</button>
+                    </form>
+                    <form method="post" action="{% url 'un_freeze'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit">Відмінити заморожування</button>
+                    </form>
+
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+                </div>
+    {% endif %}
+            {% endfor %}
+
+
+
+     <h2>Мій доставлений вантаж:</h2>
+            {% for cargo in cargos %}
+            {% if cargo.status == 'DELIVERED' %}
+                  <div class="delivered">
+                          <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                </div>
+                <div class="right">
+                    <div class="price">{{ cargo.amount }} {{ cargo.currency}}</div>
+                    <div class="price-per-km">{{ cargo.get_per_km }} грн/км</div>
+                    <div class="tags">
+                        <span>{{ cargo.get_payment_type_display }}</span>
+                        <span>{{ cargo.get_payment_moment_display }}</span>
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>{{ cargo.weight_max }} кг</span>
+                    <span>{{ cargo.volume_max }} м³</span>
+                    <span>ДШВ: {{ cargo.length }} м,{{ cargo.width }} м,{{ cargo.height }} м</span>
+
+                </div>
+                <div class="details">
+                    <span>Пакування: {{ cargo.get_packaging_display }}</span>
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                </div>
+
+
+                    {% if cargo.freeze %}
+                    <form method="post" action="{% url 'take_cargo'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit">Підвердити Машину</button>
+                    </form>
+                    <form method="post" action="{% url 'un_freeze'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit">Відмінити заморожування</button>
+                    </form>
+
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+                  </div>
+            {% endif %}
+            {% endfor %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="w-75 ms-4">
+<h1>{{title}}</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Юзернейм</th>
+             <th>Останній Логін</th>
+             <th>ПІБ</th>
+            <th>Про себе</th>
+             <th>Адреса Пошти</th>
+             <th>Роль</th>
+             <th>Фото</th>
+            <th>Рейтинг користувача</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users%}
+        <tr>
+            <td>{{ user.username}}</td>
+            <td>{{ user.last_login}}</td>
+            <td>{{ user.first_name}}
+            {{ user.last_name}}
+            {{ user.third_name}}</td>
+            <td>{{ user.about}}</td>
+            <td>{{ user.email}}</td>
+            <td>{{ user.role}}</td>
+            <td>{% if user.photo %}
+            <p><img alt="" width="32" height="32" class="rounded-circle me-2" src="{{user.photo.url}}"></p>
+        {% else %}
+           <p>Без фото</p>
+          {% endif %}
+            </td>
+            <td>{{ user.rating}} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div >
+
+{% endblock %}

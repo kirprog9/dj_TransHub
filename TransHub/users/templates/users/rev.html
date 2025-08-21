@@ -1,0 +1,30 @@
+<ul class="w-25">
+    <li>
+        {% for a in rev_my %}
+        <p>{{a}}</p>
+        <br>
+        {% endfor %}
+    </li>
+    <li>
+        {% for a in rev_for_me %}
+        <p>{{a}}</p>
+        <br>
+        {% endfor %}
+    </li>
+    <li>
+        {% for a in com_my %}
+        <p>{{a}}</p>
+        <br>
+        {% endfor %}
+    </li>
+    <li>
+        {% if com_for_me %}
+            {% for a in com_for_me %}
+            <p>{{a}}</p>
+            <br>
+            {% endfor %}
+        {% else %}
+        <p>fdgfhfdh</p>
+        {% endif %}
+    </li>
+</ul>

@@ -1,0 +1,223 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1>{{title}}</h1>
+<br>
+    <h2>Транспорт в пошуку Вантажу:</h2>
+            {% for cargo in transports %}
+    {% if cargo.status == 'Search' %}
+    <div class="{% if cargo.published %}published-t-true{% else %}published-t-false{% endif %}">
+    <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                     {% if cargo.published %}
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                    {% else %}
+                     <span style="color:red;">Не Опубліковано</span>
+                    {% endif %}
+
+                </div>
+                <div class="right">
+                     <div class="price">Дата завантаження: {{ cargo.loading_date }}</div>
+                    <div class="tags">
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>До {{ cargo.max_weight }} кг</span>
+                    <span>До {{ cargo.max_volume }} м³</span>
+
+                </div>
+
+                <div class="details">
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+
+
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                    <a href="{% url 'transport:update' cargo.id %}">Редагувати</a>
+                </div>
+
+
+                    {% if cargo.freeze %}
+                    <form method="post" action="{% url 'un_freeze_tr'%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cargo_id" value="{{ cargo.id }}">
+                    <button type="submit" class="btn btn-danger rounded-pill px-3">Відмовитися від Вантажу</button>
+                    </form>
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+            </div>
+    {% endif %}
+            {% endfor %}
+
+     <h2>Мій транспорт в дорозі:</h2>
+
+            {% for cargo in transports %}
+            {% if cargo.status == 'IN_TRANSIT' %}
+            <div class="in_transit">
+                    <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                </div>
+                <div class="right">
+                    <div class="price">Дата завантаження: {{ cargo.loading_date }}</div>
+                    <div class="tags">
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>{{ cargo.max_weight }} кг</span>
+                    <span>{{ cargo.max_volume }} м³</span>
+
+
+                </div>
+                <div class="details">
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                </div>
+                </div>
+
+
+            </div>
+        </div>
+                </div>
+    {% endif %}
+            {% endfor %}
+
+
+
+     <h2>Мій зайнятий транспорт:</h2>
+            {% for cargo in transports %}
+            {% if cargo.status == 'Busy' %}
+                  <div class="delivered">
+                          <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cargo.get_time }}</span>
+                </div>
+                <div class="right">
+                    <div class="price">Дата завантаження: {{ cargo.loading_date }}</div>
+
+                    <div class="tags">
+                        {% for item in cargo.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in cargo.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in cargo.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ cargo.country_from }}-{{ cargo.region_from }}-{{ cargo.city_from }} ---> {{ cargo.country_to }}-{{ cargo.region_to }}-{{ cargo.city_to }} — {{ cargo.get_distance }} км
+                    <br>
+                    {{ cargo.title }}
+                </div>
+                <div class="details">
+                    <span>{{ cargo.max_weight }} кг</span>
+                    <span>{{ cargo.max_volume }} м³</span>
+
+                </div>
+                <div class="details">
+                    <span> Примітки: {{ cargo.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ cargo.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ cargo.updated_at }}</span>
+                </div>
+                </div>
+
+
+            </div>
+        </div>
+                  </div>
+            {% endif %}
+            {% endfor %}
+
+</div>
+{% endblock %}

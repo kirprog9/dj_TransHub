@@ -1,0 +1,195 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container w-75 ">
+    <h1 class="h3 mb-3 fw-normal">{{title}}</h1>
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-error">{{ form.non_field_errors}}</div>
+
+           <div class="row" align="center">
+        <div class="col-md-6">
+
+            {{ form.country_from.label_tag }}
+            {{ form.country_from }}
+            <div class="form-error">{{ form.country_from.errors }}</div>
+
+            {{ form.region_from.label_tag }}
+            {{ form.region_from  }}
+            <div class="form-error">{{ form.region_from.errors }}</div>
+
+            {{ form.city_from.label_tag }}
+            {{ form.city_from }}
+            <div class="form-error">{{ form.city_from.errors }}</div>
+        </div>
+
+        <div class="col-md-6">
+
+            {{ form.country_to.label_tag }}
+            {{ form.country_to }}
+            <div class="form-error">{{ form.country_to.errors }}</div>
+
+            {{ form.region_to.label_tag }}
+            {{ form.region_to}}
+            <div class="form-error">{{ form.region_to.errors }}</div>
+
+            {{ form.city_to.label_tag }}
+            {{ form.city_to }}
+            <div class="form-error">{{ form.city_to.errors }}</div>
+
+        </div>
+    </div>
+
+        <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.loading_date.label_tag }}
+                {{ form.loading_date }}
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.max_weight.label_tag }}
+                {{ form.max_weight }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.max_volume.label_tag }}
+                {{ form.max_volume }}
+            </div>
+        </div>
+        </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                {{ form.brand.label_tag }}
+                {{ form.brand }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {{ form.model.label_tag }}
+                {{ form.model }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {{ form.license_plate.label_tag }}
+                {{ form.license_plate }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {{ form.year.label_tag }}
+                {{ form.year }}
+            </div>
+        </div>
+    </div>
+
+        <div class="row">
+
+
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.body_type.label_tag }}
+                 {{ form.body_type }}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.load_unload.label_tag }}
+                 {{ form.load_unload}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{ form.permissions.label_tag }}
+                 {{ form.permissions }}
+            </div>
+        </div>
+    </div>
+
+            <div class="form-group">
+                {{ form.photo.label_tag }}
+                {{ form.photo }}
+            </div>
+
+            <div class="form-group">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+            </div>
+
+            <div class="form-group " align="center">
+                {{ form.published.label_tag }}
+                {{ form.published }}
+            </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+
+    $('#id_country_from').change(function() {
+        var url = "{% url 'transport:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_from").html(data);
+            }
+        });
+    });
+
+    $('#id_region_from').change(function() {
+        var url = "{% url 'transport:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_from").html(data);
+            }
+        });
+    });
+
+
+    $('#id_country_to').change(function() {
+        var url = "{% url 'transport:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_to").html(data);
+            }
+        });
+    });
+
+    $('#id_region_to').change(function() {
+        var url = "{% url 'transport:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_to").html(data);
+            }
+        });
+    });
+</script>
+        <button type="submit" class="btn btn-primary">Додати транспорт</button>
+
+    </form>
+</div>
+
+{% endblock %}

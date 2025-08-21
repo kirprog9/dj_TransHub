@@ -1,0 +1,90 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="container2">
+        <div class="card">
+            <div class="card-header2">
+                <div class="left">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ transport.get_time }}</span>
+                </div>
+                <div class="right">
+                    <div class="price">Дата завантаження: {{ transport.loading_date }}</div>
+                    <div class="tags">
+                        {% for item in transport.body_type.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        <br>
+                        Тип Завантаження:
+                        {% for item in transport.load_unload.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+                        Дозволи:
+                        {% for item in transport.permissions.all %}
+                        <span>{{ item.name }}</span>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="route">{{ transport.country_from }}-{{ transport.region_from }}-{{ transport.city_from }} ---> {{ transport.country_to }}-{{ transport.region_to }}-{{ transport.city_to }} — {{ transport.get_distance }} км
+                    <br>
+                    {{ transport.title }}
+                </div>
+                <div class="details">
+                    <span>{{ transport.max_weight }} кг</span>
+                    <span>{{ transport.max_volume }} м³</span>
+
+
+                </div>
+                <div class="details">
+                    <span> Примітки: {{ transport.notes}}</span>
+
+                </div>
+                <div class="right2">
+                    <div align="center" >
+                                        {% if cargo.photo and cargo.photo.url %}
+                                    <img alt="фото транспорту" width="200" height="100"  src="{{cargo.photo.url}}">
+                                    {% endif %}
+                    </div>
+                    <span>Створено о {{ transport.created_at }}</span>
+                    <br>
+                    <span>Оновлено о {{ transport.updated_at }}</span>
+                </div>
+
+                <div class="company">{{ transport.author.name_company }}
+                    <div class="star-rating">
+                        <div class="stars-outer">
+                            <div class="stars-inner" style="width: {{ transport.author.rating|floatformat:0 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'users:user_detail' transport.author.id %}" style="color:green">Детальніше о перевізнику</a>
+
+                <div class="contact">
+                    <i class="fas fa-user"></i>
+                    <span>{{ transport.author.get_full_name }}</span>
+
+                </div>
+                <div class="contact">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:{{ transport.author.tel }}">{{ transport.author.tel }}</a>
+                </div>
+                <div class="contact">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:{{ transport.author.email }}">{{ transport.author.email }}</a>
+                </div>
+
+                </div>
+
+
+            </div>
+    </div>
+
+</div>
+{% endblock %}
+

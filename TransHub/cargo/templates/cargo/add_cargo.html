@@ -1,0 +1,239 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+
+
+<div class="container w-75 ">
+    <h1 class="h3 mb-3 fw-normal">{{title}}</h1>
+    <form method="post" enctype="multipart/form-data" >
+        <div class="form-error">{{ form.non_field_errors}}</div>
+        {% csrf_token %}
+
+            <div class="form-floating">
+                {{ form.title }}
+                <label for="{{ form.title.id_for_label }}">Найменування вантажу:</label>
+                <div class="form-error">{{ form.title.errors }}</div>
+            </div>
+
+         <div>
+     <div class="row" align="center">
+        <div class="col-md-6">
+
+            {{ form.country_from.label_tag }}
+            {{ form.country_from }}
+            <div class="form-error">{{ form.country_from.errors }}</div>
+
+            {{ form.region_from.label_tag }}
+            {{ form.region_from  }}
+            <div class="form-error">{{ form.region_from.errors }}</div>
+
+            {{ form.city_from.label_tag }}
+            {{ form.city_from }}
+            <div class="form-error">{{ form.city_from.errors }}</div>
+        </div>
+
+        <div class="col-md-6">
+
+            {{ form.country_to.label_tag }}
+            {{ form.country_to }}
+            <div class="form-error">{{ form.country_to.errors }}</div>
+
+            {{ form.region_to.label_tag }}
+            {{ form.region_to}}
+            <div class="form-error">{{ form.region_to.errors }}</div>
+
+            {{ form.city_to.label_tag }}
+            {{ form.city_to }}
+            <div class="form-error">{{ form.city_to.errors }}</div>
+
+        </div>
+    </div>
+
+          <div class="row">
+
+            <div class="col-md-6">
+                <label for="{{ form.weight_max.id_for_label }}">Вага до (кг)</label>
+                {{ form.weight_max }}
+                <div class="form-error">{{ form.weight_max.errors }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.volume_max.id_for_label }}">Обʼєм до (м³)</label>
+                {{ form.volume_max }}
+                <div class="form-error">{{ form.volume_max.errors }}</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label for="{{ form.length.id_for_label }}">Довжина (м)</label>
+                {{ form.length }}
+                <div class="form-error">{{ form.length.errors }}</div>
+            </div>
+            <div class="col-md-4">
+                <label for="{{ form.width.id_for_label }}">Ширина (м)</label>
+                {{ form.width }}
+                <div class="form-error">{{ form.width.errors }}</div>
+            </div>
+            <div class="col-md-4">
+                <label for="{{ form.height.id_for_label }}">Висота (м)</label>
+                {{ form.height }}
+                <div class="form-error">{{ form.height.errors }}</div>
+            </div>
+        </div>
+
+             <div class="row">
+
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.body_type.label_tag }}
+                 {{ form.body_type }}
+                    <div class="form-error">{{ form.body_type.errors }}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.load_unload.label_tag }}
+                 {{ form.load_unload}}
+                    <div class="form-error">{{ form.load_unload.errors }}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.permissions.label_tag }}
+                 {{ form.permissions }}
+                    <div class="form-error">{{ form.permissions.errors }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+
+          <div class="col-md-3">
+                <div class="form-floating">
+                    {{ form.packaging }}
+                    <label for="{{ form.packaging.id_for_label }}">Упаковка:</label>
+                    <div class="form-error">{{ form.packaging.errors }}</div>
+                </div>
+            </div>
+
+        <div class="col-md-3">
+            <div class="form-floating">
+                {{ form.payment_type }}
+                <label for="{{ form.payment_type.id_for_label }}">Форма оплати:</label>
+                <div class="form-error">{{ form.payment_type.errors }}</div>
+            </div>
+        </div>
+            <div class="col-md-3">
+                <div class="form-floating">
+                    {{ form.amount }}
+                    <label for="{{ form.amount.id_for_label }}">Сума коштів:</label>
+                    <div class="form-error">{{ form.amount.errors }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-floating">
+                    {{ form.currency }}
+                    <label for="{{ form.currency.id_for_label }}">Валюта:</label>
+                    <div class="form-error">{{ form.currency.errors }}</div>
+                </div>
+            </div>
+            </div>
+            <div class="form-group">
+
+                <label for="{{ form.photo.id_for_label }}">Фото:</label>
+                {{ form.photo }}
+                <div class="form-error">{{ form.photo.errors }}</div>
+
+
+
+        </div>
+
+        <div class="form-group">
+            <div class="form-floating">
+                {{ form.payment_moment }}
+                <label for="{{ form.payment_moment.id_for_label }}">Момент оплати: </label>
+                <div class="form-error">{{ form.payment_moment.errors }}</div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="form-floating">
+                {{ form.notes }}
+                <label for="{{ form.notes.id_for_label }}">Примітка:</label>
+                <div class="form-error">{{ form.notes.errors }}</div>
+            </div>
+        </div>
+        <div class="form-group" align="center">
+            {{ form.published.label_tag }}
+                {{ form.published }}
+        </div>
+ </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#id_country_from').change(function() {
+        var url = "{% url 'cargo:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_from").html(data);
+            }
+        });
+    });
+
+    $('#id_region_from').change(function() {
+        var url = "{% url 'cargo:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_from").html(data);
+            }
+        });
+    });
+
+    $('#id_country_to').change(function() {
+        var url = "{% url 'cargo:load_regions' %}";
+        var countryId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId
+            },
+            success: function(data) {
+                $("#id_region_to").html(data);
+            }
+        });
+    });
+
+    $('#id_region_to').change(function() {
+        var url = "{% url 'cargo:load_cities' %}";
+        var regionId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'region_id': regionId
+            },
+            success: function(data) {
+                $("#id_city_to").html(data);
+            }
+        });
+    });
+</script>
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+    </form>
+</div>
+
+
+
+{% endblock %}

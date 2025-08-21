@@ -1,0 +1,15 @@
+from django.db.models import Count
+from django.core.cache import cache
+from django.shortcuts import get_object_or_404
+
+from .models import *
+
+menu = [{'title': "О сайті", 'url_name': 'about'},
+        {'title': "О перевезеннях", 'url_name': 'about_cargo'},
+        {'title': "Зворотній зв'язок", 'url_name': 'contact'},
+]
+class DataMixin:
+    def get_user_context(self, **kwargs):
+        context = kwargs
+        context['menu'] = menu
+        return context

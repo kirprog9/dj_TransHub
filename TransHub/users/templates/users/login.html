@@ -1,0 +1,31 @@
+{% extends 'main/defbase.html' %}
+
+{% block content %}
+
+<main class="form-signin m-auto mt-5 " style="width:320px">
+    <div class="container" > </div>
+<h1 class="h3 mb-3 fw-normal">{{title}}</h1>
+
+<form method="post">
+
+{% csrf_token %}
+<input type="hidden" name="next" value="{{ next }}"/>
+<div class="form-error">{{ form.non_field_errors}}</div>
+    {%for f in form%}
+    <div class="form-floating">
+        {{f}}
+    <label for="{{f.id_for_label}}">{{f.label}}:</label>
+    <div class="form-error">{{f.errors}}</div>
+    </div>
+{% endfor%}
+
+    <button class="btn btn-primary w-100 my-2 " type="submit">Sign in</button>
+    root <br>
+    K4mD337Ffd
+    <hr class="my-4">
+    </form>
+    <p><a href="{% url 'users:password_reset' %}">Забули пароль?</a></p>
+
+</main>
+
+{% endblock %}

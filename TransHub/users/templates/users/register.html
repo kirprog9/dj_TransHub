@@ -1,0 +1,102 @@
+{% extends 'main/defbase.html' %}
+
+{% block content %}
+<main class="form-signin w-75 m-auto">
+<h1 class="h3 mb-3 fw-normal">{{title}}</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+  <div class="form-floating">
+                {{ form.username }}
+                <label for="{{ form.username.id_for_label }}">Ім'я користувача:</label>
+                <div class="form-error">{{ form.username.errors }}</div>
+            </div>
+<div class="row">
+    <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.email }}
+                <label for="{{ form.email.id_for_label }}">Електронна пошта:</label>
+                <div class="form-error">{{ form.email.errors }}</div>
+            </div>
+        </div>
+<div class="col-md-6">
+            <div class="form-floating">
+                {{ form.tel}}
+                 {{ form.tel.label_tag }}
+                <div class="form-error">{{form.tel.errors}}</div>
+            </div>
+      </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+            <div class="form-floating">
+                {{ form.first_name }}
+                <label for="{{ form.first_name.id_for_label }}">Ім'я:</label>
+                <div class="form-error">{{ form.first_name.errors }}</div>
+            </div>
+        </div>
+<div class="col-md-4">
+            <div class="form-floating">
+                {{ form.last_name }}
+                <label for="{{ form.last_name.id_for_label }}">Прізвище:</label>
+                <div class="form-error">{{ form.last_name.errors }}</div>
+            </div>
+    </div>
+<div class="col-md-4">
+            <div class="form-floating">
+                {{ form.third_name }}
+                <label for="{{ form.third_name.id_for_label }}">По батькові:</label>
+                <div class="form-error">{{ form.third_name.errors }}</div>
+            </div>
+    </div>
+</div>
+     <div class="row">
+    <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.role }}
+                <label for="{{ form.role.id_for_label }}">Роль:</label>
+                <div class="form-error">{{ form.role.errors }}</div>
+            </div>
+     </div>
+      <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.name_company}}
+                 {{ form.name_company.label_tag }}
+                <div class="form-error">{{form.name_company.errors}}</div>
+            </div>
+      </div>
+     </div>
+
+<div class="row">
+    <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.password1 }}
+                <label for="{{ form.password1.id_for_label }}">{{form.password1.label}}</label>
+                <div class="form-error">{{ form.password1.errors }}</div>
+            </div>
+         </div>
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.password2 }}
+                <label for="{{ form.password2.id_for_label }}">{{form.password2.label}}</label>
+                <div class="form-error">{{ form.password2.errors }}</div>
+            </div>
+ </div> </div>
+            <div class="form-group">
+    {{ form.activity_directions.label_tag }}
+    <div class="form-check-inline-container">
+        {% for checkbox in form.activity_directions %}
+            <div class="form-check-inline">
+                {{ checkbox.tag }} {{ checkbox.choice_label }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-error">{{ form.activity_directions.errors }}</div>
+</div>
+
+    <button class="btn btn-primary w-100 py-2" type="submit">Реестрація</button>
+</form>
+</main>
+{% endblock %}
